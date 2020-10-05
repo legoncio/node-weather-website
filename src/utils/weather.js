@@ -10,10 +10,12 @@ const getWeather = (latitude, longitude, callback) => {
         }else if (body.error){
             callback('Unable to fetch weather: no valid location provided', undefined)
         }else{
-            const { current } = body
+            const { location, current } = body
             callback(undefined, {
                 temperature: current.temperature,
-                feelsLike: current.feelslike
+                feelsLike: current.feelslike,
+                humidity: current.humidity,
+                time: location.localtime
             })
         }
     })

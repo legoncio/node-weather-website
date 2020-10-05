@@ -18,9 +18,11 @@ weatherForm.addEventListener('submit', (e) => {
         }
             messageOne.textContent = ''
             messageTwo.innerHTML =
-                'Address: ' + data.address + '<br><br>' +
-                'Temperature: ' + data.temperature + '°C<br><br>' +
-                'Feels like: ' + data.feelslike + '°C'
+                'Current weather for ' + data.address + '<br><br>' +
+                'The temperature is ' + data.temperature + '°C ' +
+                'and it feels like ' + data.feelslike + '°C.<br><br>' +
+                'The current humidity is ' + data.humidity +' g/m3 <br><br>' +
+                'Information observed at ' + data.time + ' local time.'
         })
     })
 })
