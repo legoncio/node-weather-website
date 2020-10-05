@@ -5,24 +5,41 @@ const searchElement = document.querySelector('input')
 const messageOne = document.querySelector('#message-one')
 const messageTwo = document.querySelector('#message-two')
 
+const getWeather = (url) =>{
+    fetch(url).then((response) =>{
+        response.json().then((data) => {
+            if (data.error) {
+                return messageTwo.textContent = data.error
+            }
+                messageOne.textContent = ''
+                messageTwo.innerHTML =
+                    'Current weather for ' + data.address + '<br><br>' +
+                    'The temperature is ' + data.temperature + '°C ' +
+                    'and it feels like ' + data.feelslike + '°C.<br><br>' +
+                    'The current humidity is ' + data.humidity +'% <br><br>' +
+                    'Information observed at ' + data.time + ' local time.'
+            })
+        })
+}
+
 weatherForm.addEventListener('submit', (e) => {
     e.preventDefault()
-    const location = searchElement.value
     messageOne.textContent ='loading...'
     messageTwo.textContent =''
-    fetch('/weather?address='+ location).then((response) =>{
-
-    response.json().then((data) => {
-        if (data.error) {
-            return messageOne.textContent = data.error
-        }
-            messageOne.textContent = ''
-            messageTwo.innerHTML =
-                'Current weather for ' + data.address + '<br><br>' +
-                'The temperature is ' + data.temperature + '°C ' +
-                'and it feels like ' + data.feelslike + '°C.<br><br>' +
-                'The current humidity is ' + data.humidity +' g/m3 <br><br>' +
-                'Information observed at ' + data.time + ' local time.'
-        })
-    })
+    if(e.submitter.id === 'manual-search'){
+        const location = searchElement.value
+        getWeather('/weather?address=' + location)
+    }else if (e.submitter.id === 'local-search'){
+        if(window.navigator.geolocation){
+            window.navigator.geolocation.getCurrentPosition((success, error) =>{
+                if(error) {
+                    messageOne.textContent = 'Error getting your location, try manual search'
+                }else{
+                    const lat = success.coords.latitude
+                    const long = success.coords.longitude
+                    getWeather('/weatherLocal?lat=' + lat + '&long=' + long)
+                }
+            })
+        }      
+    }
 })

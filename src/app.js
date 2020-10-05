@@ -51,7 +51,7 @@ app.get('/weather', (req, res) =>{
         })
     }
 
-    geocode(location, (error, { latitude, longitude, placeName } = {}) => { //Default value for object if error is an empty object
+    geocode.geocodeAddress(location, (error, { latitude, longitude, placeName } = {}) => { //Default value for object if error is an empty object
         if(error){
             return res.send({
                 address: location,
@@ -75,6 +75,37 @@ app.get('/weather', (req, res) =>{
             })
         })
     })    
+})
+
+app.get('/weatherLocal', (req, res) =>{
+    latitude = req.query.lat
+    longitude = req.query.long
+    geocode.geocodeCoords(latitude, longitude, (error, {placeName} = {}) =>{
+        if(error){
+            return res.send({
+                address: location,
+                error: 'Unable to geocode the address provided'
+            })
+        }
+        
+        weather(latitude, longitude, (error, {temperature, feelsLike, humidity, time} = {}) =>{
+            if(error){
+                return res.send({
+                    address: req.query.address,
+                    error: 'Unable to find weather data for the address provided'
+                })
+            }
+            res.send({
+                address: placeName,
+                temperature: temperature,
+                feelslike: feelsLike,
+                humidity: humidity,
+                time: time
+            })
+        })
+    })
+    
+    
 })
 
 app.get('/products', (req, res) =>{
